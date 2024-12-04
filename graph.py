@@ -9,9 +9,9 @@ ratemap = {
     "did not like it": 1
 }
 
-# Load books and user ratings datasets
-books = pd.read_csv('datasets/book/book1-100k.csv')
-user_books = pd.read_csv('datasets/rating/user_rating_0_to_1000.csv')
+# Load books and user ratings datasets (10000 samples)
+books = pd.read_csv('datasets/book/book1-100k.csv').head(10000)
+user_books = pd.read_csv('datasets/rating/user_rating_0_to_1000.csv').head(10000)
 
 # Choose the columns used for the algorithm
 books = books[['Id', 'Name', 'Authors', 'Rating', 'pagesNumber']]
@@ -65,19 +65,17 @@ def recommend_books(liked_books):
             if author.strip() in liked_authors:
                 bonus += 1
 
-    # Half point if near 150 pages of the average
-    average = liked_books_df['pagesNumber'].mean()
-    book_pages = book_data.get('pages', 0)  # Safely access 'pages' key, default to 0 if missing
-    page_diff = abs(book_pages - average)
-    if page_diff <= 150:  # Allow a small range of similarity in page numbers
-        bonus += 0.5
+        # Half point if near 150 pages of the average
+        average = liked_books_df['pagesNumber'].mean()
+        book_pages = book_data.get('pages', 0)
+        page_diff = abs(book_pages - average)
+        if page_diff <= 150:
+            bonus += 0.5
 
         return bonus
 
     def find_users(liked_books_df):
         user_scores = {}
-        print(f"Liked Books DataFrame for Users:\n{liked_books_df}")  # Debugging line
-
         for user_node in G.nodes:
             if G.nodes[user_node].get('type') == 'user':
                 score = 0
@@ -94,31 +92,28 @@ def recommend_books(liked_books):
                     user_scores[user_node] = score
 
         ranked_users = sorted(user_scores.items(), key=lambda x: x[1], reverse=True)
-        print(f"Ranked Users: {ranked_users}")  # Debugging line
         return ranked_users
 
-    user_id = 0
-    ranked_users = find_users(liked_books_df)
+    # Initialize recommended books
+    recommended_books = set()  # Use a set to prevent duplicates
+    input_books = liked_books_df['Name'].str.lower().unique()
 
-    recommended_books = []
-    input_books = liked_books_df['Name'].str.lower().unique()  # Get input books to exclude them from recommendations
+    ranked_users = find_users(liked_books_df)
 
     if ranked_users:
         for user_node, _ in ranked_users[:5]:
             for book_node in G.neighbors(user_node):
                 if G.nodes[book_node].get('type') == 'book':  # Ensure the node is a book
                     book_data = G.nodes[book_node]
-                    print(f"Book Node Data: {book_data}")  # Debugging line
                     if book_data.get('name', '').lower() not in input_books:
                         bonus = calculate_bonus(book_data, liked_books_df)
-                        recommended_books.append((book_data['name'], bonus))
-                else:
-                    print(f"Skipping non-book node: {G.nodes[book_node]}")  # Debugging line
+                        recommended_books.add((book_data['name'], bonus))  # Add to set
 
-
-    # Sort books by score
+    # Sort books by score and return the top 5
     recommended_books = sorted(recommended_books, key=lambda x: x[1], reverse=True)[:5]
     recommended_book_names = [book[0] for book in recommended_books]
     print(f"Recommended Books: {recommended_book_names}")  # Debugging line
     return recommended_book_names
+
+
 
