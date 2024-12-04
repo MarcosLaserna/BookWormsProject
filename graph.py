@@ -9,9 +9,9 @@ ratemap = {
     "did not like it": 1
 }
 
-# Load books and user ratings datasets (10000 samples)
-books = pd.read_csv('datasets/book/book1-100k.csv').head(10000)
-user_books = pd.read_csv('datasets/rating/user_rating_0_to_1000.csv').head(10000)
+# Load books and user ratings datasets
+books = pd.read_csv('datasets/book/book1-100k.csv')
+user_books = pd.read_csv('datasets/rating/user_rating_0_to_1000.csv')
 
 # Choose the columns used for the algorithm
 books = books[['Id', 'Name', 'Authors', 'Rating', 'pagesNumber']]
