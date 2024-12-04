@@ -4,4 +4,4 @@ This repository contains 2 folders, 3 code files and this README.md. The folder 
 
 ---
 
-To run the project you will download the entire project then open it in whatever software and then change directory to BookWormsProject and run 'python app.py' then once the flask backend runs change directory from BookWormsProject to frontend and run 'npm run dev' then the app should open with a local link in the console and you can use that to use the application!!
+To run the project you will download the entire project then open it in whatever software and then change directory to BookWormsProject and run `python app.py` then once the flask backend runs change directory from BookWormsProject to frontend and run `npm run dev` then the app should open with a local link in the console and you can use that to use the application!!
