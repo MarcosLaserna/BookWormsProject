@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Footer from './Footer';
 
 const PreferencesForm = () => {
   const [likedBooks, setLikedBooks] = useState(['']);
@@ -25,7 +26,7 @@ const PreferencesForm = () => {
   return (
     <div style={styles.container}>
       <header style={styles.header}>
-        <h1 style={styles.headerText}>BookWorm</h1>
+        <h1 style={styles.headerText}>BookWorms</h1>
       </header>
       <div style={styles.formContainer}>
         <h2 style={styles.formHeading}>Favorite Books</h2>
@@ -52,8 +53,10 @@ const PreferencesForm = () => {
           </button>
         </form>
       </div>
+      <Footer />
     </div>
   );
+  
 };
 
 const styles = {
