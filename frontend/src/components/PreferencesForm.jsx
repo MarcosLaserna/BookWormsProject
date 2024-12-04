@@ -1,68 +1,53 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from './Header';
 
 const PreferencesForm = () => {
-  const [form, setForm] = useState({
-    name: '',
-    likedBooks: '',
-    genres: '',
-  });
+  const [likedBooks, setLikedBooks] = useState(['']);
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+  const handleChange = (index, value) => {
+    const updatedBooks = [...likedBooks];
+    updatedBooks[index] = value;
+    setLikedBooks(updatedBooks);
+  };
+
+  const handleAddBook = () => {
+    if (likedBooks.length < 5) {
+      setLikedBooks([...likedBooks, '']);
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate('/recommendations', { state: form });
+    navigate('/recommendations', { state: { likedBooks } });
   };
 
   return (
     <div style={styles.container}>
-      <Header />
-      <div style={styles.formWrapper}>
-        <h1 style={styles.heading}>Book Preferences</h1>
+      <header style={styles.header}>
+        <h1 style={styles.headerText}>BookWorm</h1>
+      </header>
+      <div style={styles.formContainer}>
+        <h2 style={styles.formHeading}>Favorite Books</h2>
         <form onSubmit={handleSubmit} style={styles.form}>
-          <div style={styles.inputGroup}>
-            <label>Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-              placeholder="Entry1" // Placeholder text for the Name field
-              style={styles.input}
-            />
-          </div>
-          <div style={styles.inputGroup}>
-            <label>Liked Books:</label>
-            <input
-              type="text"
-              name="likedBooks"
-              value={form.likedBooks}
-              onChange={handleChange}
-              required
-              placeholder="Entry2" // Placeholder text for the Liked Books field
-              style={styles.input}
-            />
-          </div>
-          <div style={styles.inputGroup}>
-            <label>Genres:</label>
-            <input
-              type="text"
-              name="genres"
-              value={form.genres}
-              onChange={handleChange}
-              required
-              placeholder="Entry3" // Placeholder text for the Genres field
-              style={styles.input}
-            />
-          </div>
-          <button type="submit" style={styles.button}>
+          {likedBooks.map((book, index) => (
+            <div key={index} style={styles.inputGroup}>
+              <input
+                type="text"
+                placeholder={`Book ${index + 1}`}
+                value={book}
+                onChange={(e) => handleChange(index, e.target.value)}
+                required
+                style={styles.input}
+              />
+            </div>
+          ))}
+          {likedBooks.length < 5 && (
+            <button type="button" onClick={handleAddBook} style={styles.addButton}>
+              Add Another Book
+            </button>
+          )}
+          <button type="submit" style={styles.submitButton}>
             Submit
           </button>
         </form>
@@ -73,54 +58,77 @@ const PreferencesForm = () => {
 
 const styles = {
   container: {
-    display: 'flex',
-    flexDirection: 'column',
+    backgroundColor: 'white',
     height: '100vh',
     width: '100vw',
-    backgroundColor: 'white',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
     fontFamily: 'Arial, sans-serif',
   },
-  formWrapper: {
-    backgroundColor: '#f7f7f7', // Light gray background
+  header: {
+    width: '100%',
+    backgroundColor: '#e6f7e5',
+    padding: '20px 0',
+    textAlign: 'center',
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+  },
+  headerText: {
+    fontSize: '2rem',
+    color: '#4caf50',
+    margin: 0,
+  },
+  formContainer: {
+    backgroundColor: '#f8f9fa',
+    padding: '20px',
     borderRadius: '8px',
     boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-    padding: '30px',
-    width: '40%', // Slightly smaller width
-    margin: 'auto', // Center the container
+    width: '80%',
+    maxWidth: '600px', // Ensures consistent alignment
+    marginTop: '20px',
     textAlign: 'center',
   },
-  heading: {
+  formHeading: {
     fontSize: '1.8rem',
-    color: '#333',
     marginBottom: '20px',
+    color: '#333',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    gap: '15px',
+    alignItems: 'center', // Aligns all children consistently
   },
   inputGroup: {
-    width: '100%',
-    marginBottom: '15px',
+    width: '100%', // Ensures inputs stretch the same width
+    display: 'flex',
+    justifyContent: 'center',
   },
   input: {
-    width: '100%',
+    width: '90%', // Ensures the input is smaller than the container
     padding: '10px',
+    backgroundColor: 'white',
     border: '1px solid #ccc',
+    color: 'black',
     borderRadius: '4px',
-    backgroundColor: 'white', // White background
-    color: 'black', // Black text
-    fontSize: '16px', // Ensure font size is readable
   },
-  button: {
-    padding: '12px',
-    backgroundColor: '#6abd91',
+  addButton: {
+    width: '90%',
+    padding: '10px',
+    backgroundColor: '#4caf50',
     color: 'white',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
-    fontSize: '16px',
-    width: '100%',
+  },
+  submitButton: {
+    width: '90%',
+    padding: '10px',
+    backgroundColor: '#4caf50',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
   },
 };
 
