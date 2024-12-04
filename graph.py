@@ -79,7 +79,7 @@ def calculate_bonus(book_data, liked_books_df):
     book_pages = book_data.get('pages', 0)  # Safely access 'pages' key, default to 0 if missing
     page_diff = abs(book_pages - average)
     if page_diff <= 150:  # Allow a small range of similarity in page numbers
-        bonus += 0.5
+        bonus += 1
 
     return bonus
 
